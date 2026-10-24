@@ -1,0 +1,14 @@
+.env
+.vscode
+.env.*
+*.env
+*.pem
+*.key
+*.p12
+service-account*.json
+*credentials*.json
+.secrets.baseline
+**/__pycache__/
+*.pyc
+**/files_xmls/**
+*.pdf
