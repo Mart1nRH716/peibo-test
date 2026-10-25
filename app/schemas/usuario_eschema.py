@@ -10,7 +10,7 @@ class UsuarioCreate(BaseModel):
 	username: str = Field(min_length=2, max_length=200)
 	password: str = Field(min_length=8, max_length=200)
 	email: EmailStr = Field(min_length=1, max_length=200)
-	id_rol: int = Field(default=None)
+	id_rol: int
 
 class UsuarioUpdate(BaseModel):
 	username: str | None = Field(default=None, min_length=2, max_length=200)

@@ -20,7 +20,7 @@ class Usuario(Base):
 	id_usuario: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
 	username: Mapped[str] = mapped_column(String(200), unique=True, nullable=False)
 	email: Mapped[str] = mapped_column(String(200), unique=True, nullable=False)
-	id_rol: Mapped[int] = mapped_column(ForeignKey("cat_rol.id_rol"))
+	id_rol: Mapped[int] = mapped_column(ForeignKey("cat_rol.id_rol"), nullable=False)
 	rol: Mapped["Rol"] = relationship(back_populates="usuarios")
 	password_hashed: Mapped[str] = mapped_column(String(255), nullable=False)
 	created_at: Mapped[datetime] = mapped_column(server_default=func.now(), nullable=False)
