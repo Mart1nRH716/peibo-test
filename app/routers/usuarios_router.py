@@ -6,7 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models.usuario_model import Usuario
 from app.repositories.usuario_repository import UsuarioRepository
-from app.schemas.usuario_eschema import Token, UsuarioCreate, UsuarioResponse
+from app.schemas.enum import RolEnum
+from app.schemas.usuario_eschema import Token, UsuarioCreate, UsuarioResponse, UsuarioUpdate
+from app.security import RoleChecker
 from app.services.auth_service import autenticar_usuario
 from app.services.usuario_service import UsuarioService, UsernameAlreadyExistsError, EmailAlreadyExistsError, UserDoesNotExistError
 from app.utils.security_utils import create_access_token, get_current_active_user
@@ -69,8 +71,20 @@ async def delete_user(
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
 	
 	
+@router.patch("/{id_usuario}", response_model=UsuarioResponse,status_code=status.HTTP_200_OK)
+async def update_user(id_usuario: int, datos_nuevos: UsuarioUpdate, db: AsyncSession = Depends(get_db), current_user=Depends(RoleChecker([RolEnum.ADMIN]))):
+	try:
+		return await UsuarioService.update_user(db, id_usuario, datos_nuevos)
+	except UsernameAlreadyExistsError as exc:
+			raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc))
+	except UserDoesNotExistError as exc:
+				raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
+	except EmailAlreadyExistsError as exc:
+		raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc))
+	
 
-
+	
+	
 @router.get("/me", response_model=UsuarioResponse)
 async def get_my_user( current_user: Annotated[Usuario,Depends(get_current_active_user)]):
 	return current_user
