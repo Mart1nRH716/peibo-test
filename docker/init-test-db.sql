@@ -1,0 +1,1 @@
+CREATE DATABASE peibo_test;
