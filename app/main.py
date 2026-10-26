@@ -7,6 +7,7 @@ bajo el prefijo de la versión de la API y expone un endpoint de diagnóstico (h
 from fastapi import FastAPI
 from app.config import settings
 from app.routers.usuarios_router import router as usuarios_router
+from app.routers.ghibli_router import router as ghibli_router
 
 # Inicialización de la aplicación FastAPI con metadatos globales
 app= FastAPI(
@@ -16,7 +17,8 @@ app= FastAPI(
 )
 
 # Registro de enrutadores de la API (versión 1)
-app.include_router(usuarios_router, prefix=f"{settings.API_V1_STR}/usuarios", tags=["usuarios"],)
+app.include_router(usuarios_router, prefix=f"{settings.API_V1_STR}/usuarios",)
+app.include_router(ghibli_router, prefix=f"{settings.API_V1_STR}/studios-ghibli")
 
 
 @app.get(
