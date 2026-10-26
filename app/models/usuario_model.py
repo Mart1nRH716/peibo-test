@@ -10,12 +10,14 @@ from datetime import datetime
 from typing import List
 
 class Rol(Base):
+	"""Modelo ORM que representa el catálogo de roles del sistema (`cat_rol`)."""
 	__tablename__= "cat_rol"
 	id_rol: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
 	rol_nombre: Mapped[str] = mapped_column(String(20), nullable=False)
 	usuarios: Mapped[List["Usuario"]] = relationship(back_populates="rol")
 
 class Usuario(Base):
+	"""Modelo ORM que representa a los usuarios registrados en el sistema (`tb_usuario`)."""
 	__tablename__ = "tb_usuario"
 	id_usuario: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
 	username: Mapped[str] = mapped_column(String(200), unique=True, nullable=False)
