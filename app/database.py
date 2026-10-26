@@ -17,7 +17,7 @@ engine = create_async_engine(
 	pool_pre_ping=True,
 )
 
-# Fábrica de sesiones para interactuar con la base de datos
+# Generador de sesiones para interactuar con la base de datos
 SessionLocal = async_sessionmaker(autoflush=False, bind=engine, expire_on_commit=False)
 
 
