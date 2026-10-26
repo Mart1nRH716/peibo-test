@@ -1,16 +1,22 @@
 # Pruebas de endpoints de usuarios
 
-Las pruebas de API usan `TestClient` de forma síncrona y sobreescriben `get_db` con una sesión `AsyncSession`. Requieren PostgreSQL y usan exclusivamente una base llamada `peibo_test`; la fixture rechaza cualquier otro nombre antes de importar la aplicación.
+Para las pruebas se requiere de PostgreSQL y usan exclusivamente una base llamada `peibo_test`. La fixture rechaza cualquier otro nombre antes de importar la aplicación.
 
-## Preparar la base local
+## Ejecutar pruebas desde el contenedor
 
-Instala las dependencias de prueba en el entorno virtual del proyecto:
+Compose crea la base `peibo_test` al inicializar el volumen. La suite elimina y reconstruye las tablas de esa base antes de cada prueba; nunca la uses para datos que quieras conservar.
 
 ```bash
-pip install pytest httpx
+docker compose run --rm \
+  -v ./tests:/app/tests \
+  --workdir /app \
+  --entrypoint python \
+  api -m pytest -q tests/
 ```
 
-Crea la base de pruebas con el usuario PostgreSQL local:
+## Pruebas locales
+
+Si se quieren realizar las pruebas en local, se tiene que crear la base de pruebas con el usuario PostgreSQL local:
 
 ```sql
 CREATE DATABASE peibo_test;
@@ -25,9 +31,5 @@ export TEST_DATABASE_URL="postgresql+asyncpg://usuario:contraseña@localhost:543
 Luego ejecuta:
 
 ```bash
-pytest -q tests/test_usuarios_router.py
+py -m pytest
 ```
-
-La fixture crea el esquema y los roles necesarios al inicio de cada prueba. No ejecutes `seed.py` para esta base. La suite elimina y vuelve a crear sus tablas; no apuntes `TEST_DATABASE_URL` a una base con datos que quieras conservar.
-
-La integración de estas pruebas en GitHub Actions queda pendiente para una fase posterior.
