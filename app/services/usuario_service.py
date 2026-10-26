@@ -50,6 +50,14 @@ class UsuarioService:
 		return await UsuarioRepository.create_user(db,usuario_in)
 
 	@staticmethod
+	async def get_by_id(db: AsyncSession, id_usuario: int) -> Usuario | None:
+		"""Obtiene un usuario por su ID, lanzando una excepción si no existe."""
+		usuario = await UsuarioRepository.get_by_id(db, id_usuario)
+		if not usuario:
+			raise UserDoesNotExistError("Usuario no encontrado")
+		return usuario
+
+	@staticmethod
 	async def delete_user(db: AsyncSession, id_usuario: int) -> str:
 		"""Elimina un usuario del sistema por su ID tras verificar su existencia previa."""
 		usuario_a_eliminar = await UsuarioRepository.get_by_id(db, id_usuario)

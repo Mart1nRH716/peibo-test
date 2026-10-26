@@ -44,6 +44,17 @@ async def login(
 	return {"access_token": token, "token_type": "bearer"}
 
 
+@router.get(
+	"/me", 
+	response_model=UsuarioResponse,
+	summary="Obtener perfil propio",
+	description="Retorna la información del usuario autenticado actualmente en la sesión.",
+)
+async def get_my_user( current_user: Annotated[Usuario,Depends(get_current_active_user)]):
+	"""Retorna el modelo del usuario extraído directamente del token Bearer actual."""
+	return current_user
+
+
 @router.post(
 	"/crear-usuario", 
 	status_code=status.HTTP_201_CREATED, 
@@ -79,6 +90,22 @@ async def get_users(username: str | None = None, db: AsyncSession = Depends(get_
 	"""Obtiene colecciones de usuarios aplicando filtros de búsqueda opcionales."""
 	usuarios = await UsuarioRepository.get_or_search(db, username)
 	return usuarios
+
+
+@router.get(
+	"/{id_usuario}", 
+	status_code=status.HTTP_200_OK, 
+	response_model=UsuarioResponse, 
+	dependencies=[Depends(get_current_active_user)],
+	summary="Obtener un usuario por ID",
+	description="Retorna un Usuario en específico.",
+)
+async def get_user_by_id(id_usuario: int, db: AsyncSession = Depends(get_db)):
+	"""Obtiene un usuario específico por su ID."""
+	try:
+		return await UsuarioService.get_by_id(db, id_usuario) 
+	except UserDoesNotExistError as exc:
+		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
 
 
 @router.delete(
@@ -130,14 +157,3 @@ async def update_user(
 		raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc))
 	except RoleDoesNotExistError as exc:
 		raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc))
-	
-
-@router.get(
-	"/me", 
-	response_model=UsuarioResponse,
-	summary="Obtener perfil propio",
-	description="Retorna la información del usuario autenticado actualmente en la sesión.",
-)
-async def get_my_user( current_user: Annotated[Usuario,Depends(get_current_active_user)]):
-	"""Retorna el modelo del usuario extraído directamente del token Bearer actual."""
-	return current_user

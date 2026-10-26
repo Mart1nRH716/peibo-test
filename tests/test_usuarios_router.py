@@ -253,6 +253,33 @@ def test_get_users_filters_by_partial_username(
 	]
 
 
+def test_get_user_by_id_returns_user(
+	client: TestClient,
+	regular_user: TestUser,
+	auth_headers: dict[str, str],
+) -> None:
+	"""Verifica que se retorne el usuario solicitado por ID sin exponer su contraseña."""
+	response = client.get(
+		f"{USERS_URL}{regular_user.id_usuario}", headers=auth_headers
+	)
+
+	assert response.status_code == 200
+	assert response.json()["id_usuario"] == regular_user.id_usuario
+	assert response.json()["username"] == regular_user.username
+	assert "password" not in response.json()
+	assert "password_hashed" not in response.json()
+
+
+def test_get_user_by_id_returns_not_found(
+	client: TestClient, auth_headers: dict[str, str]
+) -> None:
+	"""Comprueba que se retorne 404 al consultar un ID de usuario inexistente."""
+	response = client.get(f"{USERS_URL}99999", headers=auth_headers)
+
+	assert response.status_code == 404
+	assert response.json() == {"detail": "Usuario no encontrado"}
+
+
 def test_get_users_requires_authentication(client: TestClient) -> None:
 	"""Valida que listar usuarios requiera un token de autenticación válido."""
 	response = client.get(USERS_URL)
