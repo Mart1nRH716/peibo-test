@@ -42,7 +42,7 @@ Compose inicia PostgreSQL, aplica las migraciones y carga los datos de demostrac
 - OpenAPI: <http://localhost:8000/openapi.json>
 - Health check: <http://localhost:8000/health>
 
-El puerto de la API se puede cambiar con `API_PORT`; PostgreSQL usa `POSTGRES_PORT`. Para detener los servicios sin borrar los datos, ejecuta `docker compose down`. Consulta [docs/docker.md](docs/docker.md) para las variables, pruebas en contenedores y administración del volumen.
+El puerto de la API se puede cambiar con `API_PORT`; PostgreSQL usa `POSTGRES_PORT`. Para detener los servicios sin borrar los datos, ejecuta `docker compose down`.
 
 ## Detener y datos
 
