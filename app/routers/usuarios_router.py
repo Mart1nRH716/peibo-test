@@ -19,7 +19,7 @@ from app.services.auth_service import autenticar_usuario
 from app.services.usuario_service import UsuarioService, UsernameAlreadyExistsError, EmailAlreadyExistsError, UserDoesNotExistError, RoleDoesNotExistError
 from app.utils.security_utils import create_access_token, get_current_active_user
 
-router = APIRouter()
+router = APIRouter(tags=["Usuarios"])
 
 @router.post(
 	"/token", 
